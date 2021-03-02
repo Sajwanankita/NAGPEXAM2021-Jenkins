@@ -18,18 +18,23 @@ pipeline{
         checkout scm
       }
     }
-    
-   stage("Build Project"){
-      steps{
-        bat 'mvn build'
-      }
-    }
-    
-    stage("Run Test Cases and generate test reports"){
+   
+    stage("Build Project and Run Test Cases"){
       steps{
         bat 'mvn clean install'
       }
     }
+    
+    
+     stage("Sonar Analysis"){
+       agent any
+        steps{
+          withSonarQubeEnv('Test_Sonar'){
+            bat 'mvn clean package sonar:sonar'
+          }
+        }
+    }
+
     
     
 
