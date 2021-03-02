@@ -58,6 +58,17 @@ pipeline{
         }
     }
     
+    stage("Build docker image"){
+        steps{
+            bat 'docker build -t %DOCKERHUB_REPO%:%BUILD_NUMBER% -f Dockerfile .'
+        }
+    }
+    
+    stage("Push to Docker Hub"){
+        steps{
+            bat 'docker push %DOCKERHUB_REPO%:%BUILD_NUMBER%'
+        }
+    }
     
  	stage ('Stop Running Containers') {
 				steps {
@@ -81,7 +92,13 @@ pipeline{
 
  
     
-
+     stage("Deployment By Docker"){
+        steps{
+            bat '''
+              docker run --name %CONTAINER_NAME% -d -p 8090:8080 %DOCKERHUB_REPO%:%BUILD_NUMBER%
+            '''
+        }
+    }
     
 
   }
