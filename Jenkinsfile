@@ -40,16 +40,14 @@ pipeline{
         steps{
           rtUpload{
             serverId: '123456789@artifactory',
-              spec: """
-              {
+              spec: """{
               "files":[
                   {
                       "pattern":"**/*.war",
                       "target":"NAGP_EXAM2020"
                   }
                 ]
-              }
-              """
+              }"""
           }
         }
     }
