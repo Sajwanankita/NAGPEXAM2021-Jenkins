@@ -88,6 +88,17 @@ pipeline{
         }
     }
     
+            }
+    }
+    
+     stage("Deployment By Docker"){
+        steps{
+            bat '''
+              docker run --name %CONTAINER_NAME% -d -p 8090:8080 %DOCKERHUB_REPO%:%BUILD_NUMBER%
+            '''
+        }
+    }
+    
 
   }
 }
