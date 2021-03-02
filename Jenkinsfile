@@ -35,7 +35,24 @@ pipeline{
         }
     }
 
-    
+        
+    stage("Push war to artifactory"){
+        steps{
+          rtUpload{
+            serverId: '123456789@artifactory',
+              spec:'''
+              {
+              "files":[
+                  {
+                      "pattern":"**/*.war",
+                      "target":"NAGP_EXAM2020"
+                  }
+                ]
+              }
+              '''
+          }
+        }
+    }
     
 
   }
