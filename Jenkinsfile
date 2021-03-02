@@ -73,14 +73,13 @@ pipeline{
      stage("Stop and remove running containers"){
         steps{
             bat '''
-            FOR /F %%A IN (docker ps -aqf name="^%CONTAINER_NAME%") DO (
+            FOR /F "token=*" USEBACKQ %%A IN (`docker ps -aqf name="^%CONTAINER_NAME%"`) DO (
               Set ContainerId= %%A
             )
             
             IF[%ContainerId%] EQU [](
-            ECHO "Container doesnot exists"
-            )
-            ELSE(
+              ECHO "Container doesnot exists"
+            ) ELSE(
               docker stop %ContainerId%
               docker rm %ContainerId%
             )
