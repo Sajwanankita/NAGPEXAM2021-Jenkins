@@ -66,7 +66,7 @@ pipeline{
     
     stage("Push to Docker Hub"){
         steps{
-            bat 'docker push -t %DOCKERHUB_REPO%:%BUILD_NUMBER%'
+            bat 'docker push %DOCKERHUB_REPO%:%BUILD_NUMBER%'
         }
     }
     
