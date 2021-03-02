@@ -58,34 +58,27 @@ pipeline{
         }
     }
     
-    stage("Build docker image"){
-        steps{
-            bat 'docker build -t %DOCKERHUB_REPO%:%BUILD_NUMBER% -f Dockerfile .'
-        }
-    }
     
-    stage("Push to Docker Hub"){
-        steps{
-            bat 'docker push %DOCKERHUB_REPO%:%BUILD_NUMBER%'
-        }
-    }
-    
-     stage("Stop and remove running containers"){
-        steps{
-            bat '''
-            FOR /F "token=*" USEBACKQ %%A IN (`docker ps -aqf name="^%CONTAINER_NAME%"`) DO (
-              Set ContainerId= %%A
-            )
-            
-            IF[%ContainerId%] EQU [](
-              ECHO "Container doesnot exists"
-            ) ELSE(
-              docker stop %ContainerId%
-              docker rm %ContainerId%
-            )
-            '''
-        }
-    }
+ 	stage ('Stop Running Containers') {
+				steps {
+				   bat '''
+			    FOR /F "tokens=* USEBACKQ" %%F IN (`docker ps -aqf "name=^%CONTAINER_NAME%"`) DO (
+							SET ContainerID=%%F
+				)
+				
+						
+				IF [%ContainerID%] EQU []  (
+				   ECHO "Docker container with name %CONTAINER_NAME% does not exists. Creating container..."
+				) ELSE (
+				    ECHO "Docker container with name %CONTAINER_NAME% already exists. Removing container..."
+					docker stop %ContainerID%
+					docker rm %ContainerID%
+				)
+			  
+			 '''
+			}
+		}
+
  
     
      stage("Deployment By Docker"){
