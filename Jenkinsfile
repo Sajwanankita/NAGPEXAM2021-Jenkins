@@ -86,9 +86,7 @@ pipeline{
             '''
         }
     }
-    
-            }
-    }
+ 
     
      stage("Deployment By Docker"){
         steps{
