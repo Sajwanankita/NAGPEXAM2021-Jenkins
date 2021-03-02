@@ -3,6 +3,7 @@ pipeline{
   
   environment{
     DOCKERHUB_REPO="sajwanankita/nagpjenkinsexam"
+    CONTAINER_NAME="demo_container"
   }
   
   tools{
@@ -66,6 +67,24 @@ pipeline{
     stage("Push to Docker Hub"){
         steps{
             bat 'docker push -t %DOCKERHUB_REPO%:%BUILD_NUMBER%'
+        }
+    }
+    
+     stage("Stop and remove running containers"){
+        steps{
+            bat '''
+            FOR /F %%A IN (docker ps -aqf name="^%CONTAINER_NAME%") DO (
+              Set ContainerId= %%A
+            )
+            
+            IF[%ContainerId%] EQU [](
+            ECHO "Container doesnot exists"
+            )
+            ELSE(
+              docker stop %ContainerId%
+              docker rm %ContainerId%
+            )
+            '''
         }
     }
     
