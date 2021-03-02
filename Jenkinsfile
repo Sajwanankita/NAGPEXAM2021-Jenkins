@@ -17,6 +17,21 @@ pipeline{
       steps{
         checkout scm
       }
-    } 
+    }
+    
+   stage("Build Project"){
+      steps{
+        bat 'mvn build'
+      }
+    }
+    
+    stage("Run Test Cases and generate test reports"){
+      steps{
+        bat 'mvn clean install'
+      }
+    }
+    
+    
+
   }
 }
