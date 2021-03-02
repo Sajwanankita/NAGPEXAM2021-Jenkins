@@ -1,6 +1,10 @@
 pipeline{
   agent any
   
+  environment{
+    DOCKERHUB_REPO="sajwanankita/nagpjenkinsexam"
+  }
+  
   tools{
     maven 'Maven3'
     jdk 'JDK'
@@ -50,6 +54,18 @@ pipeline{
               }
               '''
           )
+        }
+    }
+    
+    stage("Build docker image"){
+        steps{
+            bat 'docker build -t %DOCKERHUB_REPO%:%BUILD_NUMBER% -f Dockerfile .'
+        }
+    }
+    
+    stage("Push to Docker Hub"){
+        steps{
+            bat 'docker push -t %DOCKERHUB_REPO%:%BUILD_NUMBER%'
         }
     }
     
